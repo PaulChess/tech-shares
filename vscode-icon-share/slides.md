@@ -309,7 +309,9 @@ preload: false
 layout: center
 ---
 
-usage: **extension.js**
+### usage: **extension.js**
+
+<br>
 
 ```javascript {2-9|all}
 function active(context) {
@@ -321,6 +323,60 @@ function active(context) {
      * 这里可以创建webview
      */
   })
+}
+```
+
+---
+preload: false
+layout: center
+---
+
+### 3. 创建webview
+
+<br>
+
+```javascript
+const panel = vscode.window.createWebviewPanel(
+  'webview',
+  '同花顺Hxmui-Icon',
+  vscode.ViewColumn.One,
+  {
+    enableScripts: true,
+    retainContextWhenHidden: true
+  }
+);
+
+panel.iconPath = vscode.Uri.file(join(__dirname, 'resources', 'home.svg'));
+panel.webview.html = getWebViewContent(context, 'views/index.html');
+```
+
+<!--
+1. 大概介绍一下里面的一些参数
+2. getContext方法
+-->
+
+---
+preload: false
+layout: center
+---
+
+### 3. function: getWebViewContent
+
+<br>
+
+```javascript
+function getWebViewContent(context, templatePath) {
+	const resourcePath = join(context.extensionPath, templatePath);
+	const dirPath = dirname(resourcePath);
+	let html = fs.readFileSync(resourcePath, 'utf-8');
+    html = html.replace(/(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g, (m, $1, $2) => {
+	  if ($2.indexOf("https://") < 0) {
+        return $1 + vscode.Uri.file(resolve(dirPath, $2)).with({ scheme: 'vscode-resource' }).toString() + '"';
+      } else {
+        return $1 + $2 + '"';
+      }
+	});
+	return html;
 }
 ```
 
