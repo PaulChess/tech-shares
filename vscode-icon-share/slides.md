@@ -230,8 +230,15 @@ layout: center
 -->
 
 ---
+preload: false
+layout: center
+---
 
-### 2. 侧边栏配置 package.json
+2. 侧边栏配置
+
+---
+
+### 2.1 package.json 配置
 
 ```json {all|2-5|6|8-16|17-24|all}
 {
@@ -262,6 +269,15 @@ layout: center
 }
 ```
 
+<style>
+.slidev-layout {
+  padding-top: 1rem !important;
+}
+.slidev-layout h3 {
+  margin-bottom: 0.2rem;
+}  
+</style>
+
 <!--
 1. viewsContainers: https://code.visualstudio.com/api/references/contribution-points#contributes.viewsContainers
 2. views: https://code.visualstudio.com/api/references/contribution-points#contributes.views
@@ -270,7 +286,7 @@ layout: center
 
 ---
 
-### 2. 侧边栏配置 sidebarTree.js
+### 2.2 sidebarTree.js 目录树配置
 
 ```javascript
 module.exports = class SideBarTree {
@@ -309,7 +325,7 @@ preload: false
 layout: center
 ---
 
-### usage: **extension.js**
+### 2.3 usage: **extension.js**
 
 <br>
 
@@ -331,7 +347,14 @@ preload: false
 layout: center
 ---
 
-### 3. 创建webview
+3. 创建webview
+
+---
+preload: false
+layout: center
+---
+
+### 3.1 注册webview panel
 
 <br>
 
@@ -350,9 +373,13 @@ panel.iconPath = vscode.Uri.file(join(__dirname, 'resources', 'home.svg'));
 panel.webview.html = getWebViewContent(context, 'views/index.html');
 ```
 
+<br>
+
+[window.createWebviewPanel](https://code.visualstudio.com/api/references/vscode-api#window.createWebviewPanel)
+
+
 <!--
 1. 大概介绍一下里面的一些参数
-2. getContext方法
 -->
 
 ---
@@ -360,7 +387,7 @@ preload: false
 layout: center
 ---
 
-### 3. function: getWebViewContent
+### 3.2 getWebViewContent 方法
 
 <br>
 
@@ -369,6 +396,7 @@ function getWebViewContent(context, templatePath) {
 	const resourcePath = join(context.extensionPath, templatePath);
 	const dirPath = dirname(resourcePath);
 	let html = fs.readFileSync(resourcePath, 'utf-8');
+
     html = html.replace(/(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g, (m, $1, $2) => {
 	  if ($2.indexOf("https://") < 0) {
         return $1 + vscode.Uri.file(resolve(dirPath, $2)).with({ scheme: 'vscode-resource' }).toString() + '"';
@@ -376,249 +404,203 @@ function getWebViewContent(context, templatePath) {
         return $1 + $2 + '"';
       }
 	});
+
 	return html;
 }
 ```
 
----
-layout: image-right
-image: https://source.unsplash.com/collection/94734566/1920x1080
----
-
-# Code
-
-Use code snippets and get the highlighting directly![^1]
-
-```ts {all|2|1-6|9|all}
-interface User {
-  id: number
-  firstName: string
-  lastName: string
-  role: string
-}
-
-function updateUser(id: number, update: User) {
-  const user = getUser(id)
-  const newUser = {...user, ...update}  
-  saveUser(id, newUser)
-}
-```
-
-<arrow v-click="3" x1="400" y1="420" x2="230" y2="330" color="#564" width="3" arrowSize="1" />
-
-[^1]: [Learn More](https://sli.dev/guide/syntax.html#line-highlighting)
-
-<style>
-.footnotes-sep {
-  @apply mt-20 opacity-10;
-}
-.footnotes {
-  @apply text-sm opacity-75;
-}
-.footnote-backref {
-  display: none;
-}
-</style>
-
----
-
-# Components
-
-<div grid="~ cols-2 gap-4">
-<div>
-
-You can use Vue components directly inside your slides.
-
-We have provided a few built-in components like `<Tweet/>` and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
-
-```html
-<Counter :count="10" />
-```
-
-<!-- ./components/Counter.vue -->
-<Counter :count="10" m="t-4" />
-
-Check out [the guides](https://sli.dev/builtin/components.html) for more.
-
-</div>
-<div>
-
-```html
-<Tweet id="1390115482657726468" />
-```
-
-<Tweet id="1390115482657726468" scale="0.65" />
-
-</div>
-</div>
-
-
----
-class: px-20
----
-
-# Themes
-
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. Switching between themes by just **one edit** in your frontmatter:
-
-<div grid="~ cols-2 gap-2" m="-t-2">
-
-```yaml
----
-theme: default
----
-```
-
-```yaml
----
-theme: seriph
----
-```
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-default/01.png?raw=true">
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-seriph/01.png?raw=true">
-
-</div>
-
-Read more about [How to use a theme](https://sli.dev/themes/use.html) and
-check out the [Awesome Themes Gallery](https://sli.dev/themes/gallery.html).
+<!--
+1. 大概解析一下这个函数的作用 { scheme: 'vscode-resource' }
+-->
 
 ---
 preload: false
----
-
-# Animations
-
-Animations are powered by [@vueuse/motion](https://motion.vueuse.org/).
-
-```html
-<div
-  v-motion
-  :initial="{ x: -80 }"
-  :enter="{ x: 0 }">
-  Slidev
-</div>
-```
-
-<div class="w-60 relative mt-6">
-  <div class="relative w-40 h-40">
-    <img
-      v-motion
-      :initial="{ x: 800, y: -100, scale: 1.5, rotate: -50 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-square.png"
-    />
-    <img
-      v-motion
-      :initial="{ y: 500, x: -100, scale: 2 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-circle.png"
-    />
-    <img
-      v-motion
-      :initial="{ x: 600, y: 400, scale: 2, rotate: 100 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-triangle.png"
-    />
-  </div>
-
-  <div 
-    class="text-5xl absolute top-14 left-40 text-[#2B90B6] -z-1"
-    v-motion
-    :initial="{ x: -80, opacity: 0}"
-    :enter="{ x: 0, opacity: 1, transition: { delay: 2000, duration: 1000 } }">
-    Slidev
-  </div>
-</div>
-
-<!-- vue script setup scripts can be directly used in markdown, and will only affects current page -->
-<script setup lang="ts">
-const final = {
-  x: 0,
-  y: 0,
-  rotate: 0,
-  scale: 1,
-  transition: {
-    type: 'spring',
-    damping: 10,
-    stiffness: 20,
-    mass: 2
-  }
-}
-</script>
-
-<div
-  v-motion
-  :initial="{ x:35, y: 40, opacity: 0}"
-  :enter="{ y: 0, opacity: 1, transition: { delay: 3500 } }">
-
-[Learn More](https://sli.dev/guide/animations.html#motion)
-
-</div>
-
----
-
-# LaTeX
-
-LaTeX is supported out-of-box powered by [KaTeX](https://katex.org/).
-
-<br>
-
-Inline $\sqrt{3x-1}+(1+x)^2$
-
-Block
-$$
-\begin{array}{c}
-
-\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} &
-= \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} & = 4 \pi \rho \\
-
-\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t} & = \vec{\mathbf{0}} \\
-
-\nabla \cdot \vec{\mathbf{B}} & = 0
-
-\end{array}
-$$
-
-<br>
-
-[Learn more](https://sli.dev/guide/syntax#latex)
-
----
-
-# Diagrams
-
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
-
-<div class="grid grid-cols-2 gap-10 pt-4 -mb-6">
-
-```mermaid {scale: 0.9}
-sequenceDiagram
-    Alice->John: Hello John, how are you?
-    Note over Alice,John: A typical interaction
-```
-
-```mermaid {theme: 'neutral', scale: 0.8}
-graph TD
-B[Text] --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
-
-</div>
-
-[Learn More](https://sli.dev/guide/syntax.html#diagrams)
-
-
----
 layout: center
-class: text-center
 ---
 
-# Learn More
+4. VS Code插件与Webview的通信
 
-[Documentations](https://sli.dev) · [GitHub](https://github.com/slidevjs/slidev) · [Showcases](https://sli.dev/showcases.html)
+---
+preload: false
+layout: center
+---
+
+场景：用户在ui界面点击按钮的时候，文件/系统层面的工作需要由vscode去处理
+
+<v-clicks>
+
+* 生成svg-symbols.js
+* 生成svg文件夹
+* 设置本地缓存
+* 获取本地缓存
+* 清除本地缓存
+  
+</v-clicks>
+
+---
+
+<div>
+
+webview中触发事件调用`vscode.postMessage`发送事件通知和参数
+
+### index.html
+```javascript
+vscode.postMessage({
+  command: 'exportSvgSymbolsFile',
+  data: this.choosedList
+})
+```
+
+</div>
+
+<br>
+
+<div v-click>
+
+vscode插件一侧调用`panel.webview.onDidReceiveMessage`监听webview事件
+
+### extension.js
+```javascript
+panel.webview.onDidReceiveMessage(
+  async message => {
+    switch(message.command) {
+      case 'exportSvgSymbolsFile':
+        break;
+      case 'exportSvgFile':
+        break;
+      // 其他事件...
+    }
+  }
+)
+```
+
+</div>
+
+---
+preload: false
+layout: center
+---
+
+5. 生成svg-symbols
+
+---
+
+### 生成svg-symbols
+
+1. `vscode.window.showSaveDialog` 调起保存弹窗，获取保存路径
+
+2. 根据 `webview` 中返回的svg数组生成svg文件夹
+
+3. 使用 `gulp-svg-symbols` 和 `gulp-svg-symbols2js` 输出 `svg-symbolsjs`
+
+```javascript
+function genSvgSymbolsJs(svgPath, outPath, callback = () => {}) {
+  removeSync(outPath);
+  return gulp
+    .src(`${svgPath}/*.svg`)
+    .pipe(svgSymbols())
+    .pipe(svgSymbols2js())
+    .pipe(gulp.dest(`${outPath}`))
+    .on('end', () => { callback() })
+}
+```
+
+---
+preload: false
+layout: center
+---
+
+6. 本地缓存
+
+---
+
+这里缓存用的是[lowdb](https://www.npmjs.com/package/lowdb)
+
+1. 初始化
+
+```javascript
+const adapter = new FileSync(join(__dirname,'db.json'));
+const db = low(adapter);
+
+db.data = { posts: {} }; // 设置默认值
+```
+
+2. 设置缓存
+
+```javascript
+db.data.posts[message.key] = message.value;
+```
+
+3. 获取缓存 - 这里涉及到和webview的通信
+
+```javascript
+panel.webview.postMessage({ command: 'onGetStorageSuccess', data: db.data.posts[message.key] });
+```
+
+4. 清除缓存
+
+```javascript
+db.data.posts[message.key] = '';
+```
+
+---
+preload: false
+layout: center
+---
+
+7. 插件发布
+
+---
+
+# 插件发布的两种方式
+* vsce package 发布vsix本地包
+* vsce publish 发布到应用市场
+
+<br>
+
+有个坑需要注意一下:  
+当我们在`package.json`中配置了`icon`属性，即应用的图标，但是没有指定repository仓库时，
+发布的命令需要增加额外的参数：
+
+```javascript
+vsce publish --baseContentUrl https://none/ --baseImagesUrl https://none/
+
+vsce package --baseContentUrl https://none/ --baseImagesUrl https://none/
+```
+
+---
+preload: false
+layout: center
+---
+
+<h1 class="segment-title">
+References
+</h1>
+
+---
+layout: image-left
+image: https://source.unsplash.com/collection/94734568/1920x1080
+---
+
+# 参考资料
+- [vscode官方文档](https://code.visualstudio.com/api/get-started/your-first-extension)
+- [vscode webview](https://code.visualstudio.com/api/extension-guides/webview)
+- [vscode TreeView](https://code.visualstudio.com/api/extension-guides/tree-view)
+- [vscode插件与webview相互通信](https://zhouhangzooo.github.io/2019/04/03/vscode%E6%8F%92%E4%BB%B6%E4%B8%8Ewebview%E7%9B%B8%E4%BA%92%E9%80%9A%E4%BF%A1/)
+- [lowdb 仓库](https://github.com/typicode/lowdb)
+- [gulp-svg-symbols 仓库](https://github.com/Hiswe/gulp-svg-symbols)
+- [gulp-svg-symbols2js 仓库](https://github.com/JofunLiang/gulp-svg-symbols2js)
+- [VS Code 插件开发入门教程](https://mp.weixin.qq.com/s/yYGeE1ZYwW2MZWGTYXWG1g)
+- [VSCode插件开发全攻略](https://www.cnblogs.com/liuxianan/p/vscode-plugin-overview.html#%E6%9C%89%E5%BF%85%E8%A6%81%E5%AD%A6%E4%B9%A0vscode%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91%E5%90%97)
+- [VSCode WebView插件（扩展）开发实战](https://juejin.cn/post/6844903966799577101)
+- [小霸王插件 仓库](https://github.com/gamedilong/anes)
+- [我爱掘金插件 仓库](https://github.com/ezshine/vscode-ilovejuejin)
+
+---
+preload: false
+layout: center
+---
+
+<h1 class="segment-title">
+Thank You!
+</h1>
