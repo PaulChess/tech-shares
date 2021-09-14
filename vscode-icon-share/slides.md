@@ -22,7 +22,13 @@ info: |
 
 Presentation slides for developers
 
-<div class="pt-12">
+
+<div class="abs-br mr-16 mb-25 text-left gap-2 text-light-900">
+  <p style="line-height: 1rem">分享: 沈佳棋</p>
+  <p style="line-height: 1rem">部门: B2C开发基础架构部</p>
+</div>
+
+<div class="pt-5">
   <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
     Press Space for next page <carbon:arrow-right class="inline"/>
   </span>
@@ -32,7 +38,7 @@ Presentation slides for developers
   <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="text-xl icon-btn opacity-50 !border-none !hover:text-white">
     <carbon:edit />
   </button>
-  <a href="https://github.com/slidevjs/slidev" target="_blank" alt="GitHub"
+  <a href="https://github.com/PaulChess" target="_blank" alt="GitHub"
     class="text-xl icon-btn opacity-50 !border-none !hover:text-white">
     <carbon-logo-github />
   </a>
@@ -155,6 +161,24 @@ video {
 
 ---
 
+补充：网络接口切换
+
+由于 `arsenel` 与 `datav` 接口访问支持的网络不同，因此在无法访问接口的情况下  
+需要根据自己连接网络尝试切换调用另外一个接口。
+
+<div v-click>
+
+- arsenel
+  - 公司电脑内外网均可联通
+  - 自己电脑连接部分办公网络
+- datav
+  - 10jqka
+  - 自己电脑连接部分办公网络
+
+</div>
+
+---
+
 # Main Feature
 
 <div class="grid grid-cols-[1.5fr,4.2fr] gap-4">
@@ -237,8 +261,20 @@ layout: center
 2. 侧边栏配置
 
 ---
+preload: false
+layout: center
+---
 
-### 2.1 package.json 配置
+核心配置项：
+- [Tree View Container](https://code.visualstudio.com/api/references/contribution-points#contributes.viewsContainers) : 侧边栏按钮入口
+
+- [Tree View](https://code.visualstudio.com/api/references/contribution-points#contributes.views) : 侧边栏面板
+
+- [TreeDataProvider](https://code.visualstudio.com/api/extension-guides/tree-view)：向侧边栏面板中注入数据
+
+- onView指令注册：注册指令
+
+---
 
 ```json {all|2-5|6|8-16|17-24|all}
 {
@@ -418,7 +454,43 @@ preload: false
 layout: center
 ---
 
-4. VS Code插件与Webview的通信
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至此，我们就完成了一个能够加载 `webview` 且配置了侧边栏面板的 `VSCode` 插件模板，  
+后续有新的开发需求可以直接拉取模板进行简单修改进行使用。  
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[模板地址](https://github.com/PaulChess/vscode-webview-template)
+
+---
+preload: false
+layout: center
+---
+
+4. 核心业务逻辑
+
+---
+preload: false
+layout: center
+---
+
+业务逻辑中需要注意的地方：
+
+<v-clicks>
+
+* searchList(搜索列表)中任意一个`checkbox`发生`change`事件（选中/取消）的时候  
+都需要去更新`choosedList`(已选中的列表)
+<br>
+* choosedList列表中进行删除的时候需要去更新`searchList`中对应项的选中状态
+<br>
+* searchList重置的时候需要结合`choosedList`来判断每一项的选中状态
+
+</v-clicks>
+
+---
+preload: false
+layout: center
+---
+
+5. VS Code插件与Webview的通信
 
 ---
 preload: false
@@ -481,7 +553,7 @@ preload: false
 layout: center
 ---
 
-5. 生成svg-symbols
+6. 生成svg-symbols
 
 ---
 
@@ -505,16 +577,25 @@ function genSvgSymbolsJs(svgPath, outPath, callback = () => {}) {
 }
 ```
 
+<br>
+<br>
+
+<div v-click>
+小插曲
+</div>
+
 ---
 preload: false
 layout: center
 ---
 
-6. 本地缓存
+7. 本地缓存
 
 ---
 
-这里缓存用的是[lowdb](https://www.npmjs.com/package/lowdb)
+这里缓存用的是[lowdb](https://www.cnblogs.com/tugenhua0707/p/11403202.html)  
+  
+LowDB是基于node的纯JSON文件数据库,不须要服务器,基于内存和硬盘的存储用于缓存播放器数据
 
 1. 初始化
 
@@ -548,7 +629,7 @@ preload: false
 layout: center
 ---
 
-7. 插件发布
+8. 插件发布
 
 ---
 
